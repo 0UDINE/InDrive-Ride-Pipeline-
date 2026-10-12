@@ -9,7 +9,7 @@ from db import run_sql_file
 
 def sql_task(name):
     # TODO 1: return a PythonOperator (task_id=name) that runs sql/mart/<name>.sql with run_sql_file
-    return PythonOperator(task_id=name,run_sql_file=f"sql/mart/{name}.sql")
+    return PythonOperator(task_id=name,python_callable=run_sql_file,op_args=[f"mart/{name}.sql"],)
 
 
 with DAG(
@@ -24,5 +24,6 @@ with DAG(
     rides = sql_task("rides")
     revenue_by_zone = sql_task("revenue_by_zone")
     driver_leaderboard = sql_task("driver_leaderboard")
+    revenue_by_vehicle_type = sql_task("revenue_by_vehicle_type")
     # TODO 3: "rides" first, then the two others in parallel (>> [a, b])
-    rides >> [revenue_by_zone, driver_leaderboard]
+    rides >> [revenue_by_zone, driver_leaderboard, revenue_by_vehicle_type]
